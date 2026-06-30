@@ -1,6 +1,6 @@
 FROM node:20-alpine
 RUN apk add --no-cache openssl
-RUN corepack enable && corepack prepare yarn@1.22.22 --activate
+RUN corepack enable && corepack prepare yarn@4.14.1 --activate
 
 EXPOSE 3000
 
@@ -8,9 +8,9 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-COPY package.json yarn.lock* ./
+COPY package.json yarn.lock .yarnrc.yml ./
 
-RUN yarn install --production && yarn cache clean
+RUN yarn install --immutable
 
 COPY . .
 
