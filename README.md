@@ -43,10 +43,16 @@ corepack enable
 yarn install
 ```
 
-Set `DATABASE_URL` to your PostgreSQL connection string (e.g. in a `.env` file):
+If you don't have a PostgreSQL instance available, you can start a local one with Docker (exposed on port `5440` to avoid clashing with other local Postgres instances):
 
 ```shell
-DATABASE_URL=postgres://user:password@localhost:5432/app
+docker compose up -d
+```
+
+Set `DATABASE_URL` to your PostgreSQL connection string (e.g. in a `.env` file). For the Docker Compose database above:
+
+```shell
+DATABASE_URL=postgres://app:password@localhost:5440/app
 ```
 
 Apply the Drizzle migrations (from the root-level `drizzle/` directory):
