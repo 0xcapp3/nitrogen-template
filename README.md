@@ -2,9 +2,23 @@
 
 This is a template for building a [Shopify app](https://shopify.dev/docs/apps/getting-started) using [React Router](https://reactrouter.com/). It was forked from the [Shopify Remix app template](https://github.com/Shopify/shopify-app-template-remix) and converted to React Router.
 
-Rather than cloning this repo, follow the [Quick Start steps](https://github.com/Shopify/shopify-app-template-react-router#quick-start).
-
 Visit the [`shopify.dev` documentation](https://shopify.dev/docs/api/shopify-app-react-router) for more details on the React Router app package.
+
+## About this fork
+
+This is an internal fork of the official [Shopify React Router app template](https://github.com/Shopify/shopify-app-template-react-router). It deviates from upstream in two ways only:
+
+- **Session storage**: [Drizzle ORM](https://orm.drizzle.team/) with **PostgreSQL** replaces Prisma/SQLite. Sessions are stored via a custom `SessionStorage` adapter (`app/db/session.storage.ts`), with the schema in `app/db/schema.ts` and migrations in the root-level `drizzle/` directory. Prisma is not used.
+- **Package manager**: [Yarn 4](https://yarnpkg.com/) (`4.14.1`) via Corepack, with `nodeLinker: node-modules` (no PnP).
+
+Everything else intentionally matches upstream to keep the fork easy to update. To sync with the official template:
+
+```shell
+git fetch upstream
+git merge upstream/main
+```
+
+(The `upstream` remote points to `https://github.com/Shopify/shopify-app-template-react-router.git`.)
 
 ## Upgrading from Remix
 
@@ -14,18 +28,37 @@ If you have an existing Remix app that you want to upgrade to React Router, plea
 
 ### Prerequisites
 
-Before you begin, you'll need to [download and install the Shopify CLI](https://shopify.dev/docs/apps/tools/cli/getting-started) if you haven't already.
+Before you begin, you'll need:
+
+1. The [Shopify CLI](https://shopify.dev/docs/apps/tools/cli/getting-started) installed.
+2. Node.js `>=20.19 <22 || >=22.12` with Corepack enabled (`corepack enable`), so the pinned Yarn `4.14.1` is used automatically.
+3. A running **PostgreSQL** database, reachable via the `DATABASE_URL` environment variable.
 
 ### Setup
 
+Clone this repository, then:
+
 ```shell
-shopify app init --template=https://github.com/Shopify/shopify-app-template-react-router
+corepack enable
+yarn install
+```
+
+Set `DATABASE_URL` to your PostgreSQL connection string (e.g. in a `.env` file):
+
+```shell
+DATABASE_URL=postgres://user:password@localhost:5432/app
+```
+
+Apply the Drizzle migrations (from the root-level `drizzle/` directory):
+
+```shell
+yarn setup
 ```
 
 ### Local Development
 
 ```shell
-shopify app dev
+yarn dev
 ```
 
 Press P to open the URL to your app. Once you click install, you can start development.
@@ -78,42 +111,31 @@ For more information on the Shopify Dev MCP please read [the documentation](http
 
 ### Application Storage
 
-This template uses [Prisma](https://www.prisma.io/) to store session data, by default using an [SQLite](https://www.sqlite.org/index.html) database.
-The database is defined as a Prisma schema in `prisma/schema.prisma`.
+This template uses [Drizzle ORM](https://orm.drizzle.team/) to store session data, by default using a **PostgreSQL** database configured via the `DATABASE_URL` environment variable.
 
-This use of SQLite works in production if your app runs as a single instance.
-The database that works best for you depends on the data your app needs and how it is queried.
-Here’s a short list of databases providers that provide a free tier to get started:
+The relevant files are:
 
-| Database   | Type             | Hosters                                                                                                                                                                                                                                    |
-| ---------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| MySQL      | SQL              | [Digital Ocean](https://www.digitalocean.com/products/managed-databases-mysql), [Planet Scale](https://planetscale.com/), [Amazon Aurora](https://aws.amazon.com/rds/aurora/), [Google Cloud SQL](https://cloud.google.com/sql/docs/mysql) |
-| PostgreSQL | SQL              | [Digital Ocean](https://www.digitalocean.com/products/managed-databases-postgresql), [Amazon Aurora](https://aws.amazon.com/rds/aurora/), [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres)                                   |
-| Redis      | Key-value        | [Digital Ocean](https://www.digitalocean.com/products/managed-databases-redis), [Amazon MemoryDB](https://aws.amazon.com/memorydb/)                                                                                                        |
-| MongoDB    | NoSQL / Document | [Digital Ocean](https://www.digitalocean.com/products/managed-databases-mongodb), [MongoDB Atlas](https://www.mongodb.com/atlas/database)                                                                                                  |
+- `app/db/schema.ts` — Drizzle schema (the `shopify_sessions` table)
+- `app/db/session.storage.ts` — custom `SessionStorage` adapter
+- `app/db.server.ts` — database client
+- `drizzle.config.ts` — Drizzle Kit configuration
+- `drizzle/` — generated SQL migrations (applied with `yarn setup`)
 
-To use one of these, you can use a different [datasource provider](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#datasource) in your `schema.prisma` file, or a different [SessionStorage adapter package](https://github.com/Shopify/shopify-api-js/blob/main/packages/shopify-api/docs/guides/session-storage.md).
+If you change the schema, generate a new migration and apply it:
+
+```shell
+yarn drizzle-kit generate
+yarn setup
+```
+
+PostgreSQL is the default and only configuration supported out of the box. Drizzle also supports other dialects (e.g. SQLite or MySQL) if you adjust `drizzle.config.ts`, the schema, and the database client accordingly. Alternatively, a different [SessionStorage adapter package](https://github.com/Shopify/shopify-api-js/blob/main/packages/shopify-api/docs/guides/session-storage.md) can be used.
 
 ### Build
 
-Build the app by running the command below with the package manager of your choice:
-
-Using yarn:
+This fork uses Yarn as the default package manager. Build the app with:
 
 ```shell
 yarn build
-```
-
-Using npm:
-
-```shell
-npm run build
-```
-
-Using pnpm:
-
-```shell
-pnpm run build
 ```
 
 ## Hosting
@@ -134,10 +156,14 @@ When you reach the step for [setting up environment variables](https://shopify.d
 If you get an error like:
 
 ```
-The table `main.Session` does not exist in the current database.
+relation "shopify_sessions" does not exist
 ```
 
-Create the database for Prisma. Run the `setup` script in `package.json` using `npm`, `yarn` or `pnpm`.
+The Drizzle migrations haven't been applied to your database. Make sure `DATABASE_URL` points to your PostgreSQL database and run:
+
+```shell
+yarn setup
+```
 
 ### Navigating/redirecting breaks an embedded app
 
@@ -195,25 +221,6 @@ To test [streaming using await](https://reactrouter.com/api/components/Await#awa
 ### "nbf" claim timestamp check failed
 
 This is because a JWT token is expired. If you are consistently getting this error, it could be that the clock on your machine is not in sync with the server. To fix this ensure you have enabled "Set time and date automatically" in the "Date and Time" settings on your computer.
-
-### Using MongoDB and Prisma
-
-If you choose to use MongoDB with Prisma, there are some gotchas in Prisma's MongoDB support to be aware of. Please see the [Prisma SessionStorage README](https://www.npmjs.com/package/@shopify/shopify-app-session-storage-prisma#mongodb).
-
-### Unable to require(`C:\...\query_engine-windows.dll.node`).
-
-Unable to require(`C:\...\query_engine-windows.dll.node`).
-The Prisma engines do not seem to be compatible with your system.
-
-query_engine-windows.dll.node is not a valid Win32 application.
-
-**Fix:** Set the environment variable:
-
-```shell
-PRISMA_CLIENT_ENGINE_TYPE=binary
-```
-
-This forces Prisma to use the binary engine mode, which runs the query engine as a separate process and can work via emulation on Windows ARM64.
 
 ## Resources
 
