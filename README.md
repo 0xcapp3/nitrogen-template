@@ -10,6 +10,7 @@ This is an internal fork of the official [Shopify React Router app template](htt
 
 - **Session storage**: [Drizzle ORM](https://orm.drizzle.team/) with **PostgreSQL** replaces Prisma/SQLite. Sessions are stored via a custom `SessionStorage` adapter (`app/db/session.storage.ts`), with the schema in `app/db/schema.ts` and migrations in the root-level `drizzle/` directory. Prisma is not used.
 - **Package manager**: [Yarn 4](https://yarnpkg.com/) (`4.14.1`) via Corepack, with `nodeLinker: node-modules` (no PnP).
+- **Internal hardening**: production fails fast without `DATABASE_URL` and `SHOPIFY_TOKEN_ENCRYPTION_KEY`, Shopify tokens can be encrypted at rest, and public-app privacy webhook stubs are included.
 
 Everything else intentionally matches upstream to keep the fork easy to update. To sync with the official template:
 
@@ -41,6 +42,7 @@ Clone this repository, then:
 ```shell
 corepack enable
 yarn install
+cp .env.example .env
 ```
 
 If you don't have a PostgreSQL instance available, you can start a local one with Docker (exposed on port `5440` to avoid clashing with other local Postgres instances):
@@ -53,6 +55,12 @@ Set `DATABASE_URL` to your PostgreSQL connection string (e.g. in a `.env` file).
 
 ```shell
 DATABASE_URL=postgres://app:password@localhost:5440/app
+```
+
+For production, set `SHOPIFY_TOKEN_ENCRYPTION_KEY` to a 32-byte base64 key:
+
+```shell
+openssl rand -base64 32
 ```
 
 Apply the Drizzle migrations (from the root-level `drizzle/` directory):
@@ -130,11 +138,27 @@ The relevant files are:
 If you change the schema, generate a new migration and apply it:
 
 ```shell
-yarn drizzle-kit generate
+yarn db:generate
 yarn setup
 ```
 
 PostgreSQL is the default and only configuration supported out of the box. Drizzle also supports other dialects (e.g. SQLite or MySQL) if you adjust `drizzle.config.ts`, the schema, and the database client accordingly. Alternatively, a different [SessionStorage adapter package](https://github.com/Shopify/shopify-api-js/blob/main/packages/shopify-api/docs/guides/session-storage.md) can be used.
+
+### Token Encryption
+
+Shopify access and refresh tokens are encrypted at rest when `SHOPIFY_TOKEN_ENCRYPTION_KEY` is set. The key is required in production and optional in development/test for local DX.
+
+Generate a key with:
+
+```shell
+openssl rand -base64 32
+```
+
+### Privacy Webhooks
+
+Public apps must subscribe to Shopify's mandatory privacy compliance topics. This template includes a generic `/webhooks/privacy` route that acknowledges `customers/data_request`, `customers/redact`, and `shop/redact`.
+
+The template stores Shopify session data only; `shop/redact` deletes sessions for the shop. Apps that store customer or shop data must extend `app/routes/webhooks.privacy.tsx` with app-specific export/redaction behavior.
 
 ### Build
 
@@ -142,6 +166,12 @@ This fork uses Yarn as the default package manager. Build the app with:
 
 ```shell
 yarn build
+```
+
+Run the internal check suite with:
+
+```shell
+yarn check
 ```
 
 ## Hosting
@@ -153,7 +183,7 @@ When you're ready to set up your app in production, you can follow [our deployme
 - [Render](https://render.com/docs/deploy-shopify-app): This tutorial guides you through using Docker to deploy and install apps on a Dev store.
 - [Manual deployment guide](https://shopify.dev/docs/apps/launch/deployment/deploy-to-hosting-service): This resource provides general guidance on the requirements of deployment including environment variables, secrets, and persistent data.
 
-When you reach the step for [setting up environment variables](https://shopify.dev/docs/apps/deployment/web#set-env-vars), you also need to set the variable `NODE_ENV=production`.
+When you reach the step for [setting up environment variables](https://shopify.dev/docs/apps/deployment/web#set-env-vars), you also need to set the variables `NODE_ENV=production`, `DATABASE_URL`, and `SHOPIFY_TOKEN_ENCRYPTION_KEY`.
 
 ## Gotchas / Troubleshooting
 

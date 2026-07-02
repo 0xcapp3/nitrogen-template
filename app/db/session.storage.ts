@@ -3,6 +3,7 @@ import type { SessionStorage } from "@shopify/shopify-app-session-storage";
 import { eq, inArray } from "drizzle-orm";
 import { db } from "../db.server";
 import { shopifySessions } from "./schema";
+import { decryptToken, encryptToken } from "./token-crypto.server";
 
 type SessionRow = typeof shopifySessions.$inferSelect;
 
@@ -15,7 +16,7 @@ function sessionValues(session: Session) {
     isOnline: session.isOnline,
     scope: session.scope ?? null,
     expires: session.expires ?? null,
-    accessToken: session.accessToken ?? null,
+    accessToken: encryptToken(session.accessToken ?? null),
     userId: associatedUser?.id ? String(associatedUser.id) : null,
     firstName: associatedUser?.first_name ?? null,
     lastName: associatedUser?.last_name ?? null,
@@ -24,7 +25,7 @@ function sessionValues(session: Session) {
     locale: associatedUser?.locale ?? null,
     collaborator: associatedUser?.collaborator ?? false,
     emailVerified: associatedUser?.email_verified ?? false,
-    refreshToken: session.refreshToken ?? null,
+    refreshToken: encryptToken(session.refreshToken ?? null),
     refreshTokenExpires: session.refreshTokenExpires ?? null,
   };
 }
@@ -37,11 +38,11 @@ function rowToSession(row: SessionRow): Session {
     isOnline: row.isOnline,
     scope: row.scope ?? undefined,
     expires: row.expires ?? undefined,
-    accessToken: row.accessToken ?? undefined,
+    accessToken: decryptToken(row.accessToken) ?? undefined,
   });
 
   if (row.refreshToken) {
-    session.refreshToken = row.refreshToken;
+    session.refreshToken = decryptToken(row.refreshToken) ?? undefined;
   }
 
   if (row.refreshTokenExpires) {

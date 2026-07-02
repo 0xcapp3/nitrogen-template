@@ -16,4 +16,6 @@ COPY . .
 
 RUN yarn build
 
+USER node
+
 CMD ["yarn", "run", "docker-start"]

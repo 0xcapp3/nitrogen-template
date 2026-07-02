@@ -6,6 +6,10 @@ const globalForDb = globalThis as unknown as {
   postgresClient: postgres.Sql | undefined;
 };
 
+if (process.env.NODE_ENV === "production" && !process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL is required in production");
+}
+
 const client =
   globalForDb.postgresClient ??
   (process.env.DATABASE_URL

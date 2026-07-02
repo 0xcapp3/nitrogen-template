@@ -51,7 +51,7 @@ This repo is the **React Router template** for Shopify apps. It is a single-app 
 - **Framework**: React Router 7 (the successor to Remix) with server-side loaders/actions
 - **Auth/session**: uses `@shopify/shopify-app-react-router` for auth, session storage, and embedded App Bridge integration
 - **UI**: Polaris + App Bridge
-- **Database**: Prisma + SQLite by default (session storage)
+- **Database**: Drizzle + PostgreSQL by default (session storage)
 - **Purpose**: provides a working starting point, not a library
 
 Issues here are usually about:
@@ -85,7 +85,7 @@ Extract:
 - Existing labels and comments
 - Timeline of the issue
 - **Environment info**: Node version, pnpm version, Shopify CLI version, OS — these often drive the root cause
-- **Scope**: identify which area this issue touches (`app/routes/`, `app/shopify.server.ts`, `prisma/`, webhook handlers, etc.)
+- **Scope**: identify which area this issue touches (`app/routes/`, `app/shopify.server.ts`, `app/db/`, `drizzle/`, webhook handlers, etc.)
 
 ### Step 2: Assess Version / Library Status
 
@@ -128,7 +128,7 @@ Also consider searching `Shopify/shopify-app-js` for the same terms — many tem
 
 Before diving into code, verify the reported behavior:
 - Check if the described behavior matches what the current template would produce
-- If the issue includes a code snippet or reproduction steps, trace through the relevant code paths (`app/shopify.server.ts`, `app/routes/*`, `prisma/schema.prisma`)
+- If the issue includes a code snippet or reproduction steps, trace through the relevant code paths (`app/shopify.server.ts`, `app/routes/*`, `app/db/schema.ts`, `app/db/session.storage.ts`)
 - If the issue references specific error messages, search for them in the template and, if absent, in `node_modules/@shopify/shopify-app-react-router` if the user reports a library-originated error
 
 This doesn't require running the app — code-level verification is sufficient.
@@ -140,7 +140,7 @@ Based on the issue, similar issues found, and reproduction attempt, examine the 
 - `app/shopify.server.ts` for auth / session configuration
 - `app/routes/app.*` for embedded admin flows
 - `app/routes/webhooks.*` for webhook handlers
-- `prisma/schema.prisma` for session storage
+- `app/db/schema.ts` and `app/db/session.storage.ts` for session storage
 - Recent commits in the affected area
 
 ### Step 6: Classify and Analyze
