@@ -1,0 +1,16 @@
+# Toolchain for local development, for anyone using mise (https://mise.jdx.dev).
+#
+# `node` is duplicated in `.nvmrc`, which stays the portable source of truth:
+# it is what CI feeds to `actions/setup-node` via `node-version-file`, and what
+# nvm/fnm users pick up. mise does not read `.nvmrc` unless
+# `idiomatic_version_file_enable_tools` opts node in, so it is repeated here.
+# Keep the two in sync; `package.json` `engines.node` is the third place.
+#
+# `yarn` is pinned here as well because Corepack — the way `packageManager` in
+# package.json is normally honoured — was removed from the Node distribution in
+# v25 and this repo vendors no Yarn release in `.yarn/releases`. Providing Yarn
+# through mise sidesteps Corepack entirely for local work. CI and the Dockerfile
+# still go through Corepack, which is fine: both pin Node 24, where it ships.
+[tools]
+node = "24"
+yarn = "4.14.1"

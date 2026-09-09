@@ -5,6 +5,7 @@ import {
   shopifyApp,
 } from "@shopify/shopify-app-react-router/server";
 import { DrizzleSessionStorage } from "./db/session.storage";
+import { buildDomainTransformations } from "./shopify.domains";
 
 const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY,
@@ -18,9 +19,20 @@ const shopify = shopifyApp({
   future: {
     expiringOfflineAccessTokens: true,
   },
-  ...(process.env.SHOP_CUSTOM_DOMAIN
-    ? { customShopDomains: [process.env.SHOP_CUSTOM_DOMAIN] }
-    : {}),
+  // See `./shopify.domains` for why this is a `domainTransformations` identity
+  // mapping rather than the `customShopDomains` option this template used to
+  // pass.
+  //
+  // Heads up: `shopifyApp` is declared as
+  // `shopifyApp<Config extends AppConfigArg>(appConfig: Readonly<Config>)`, so
+  // `Config` is inferred from this very object and TypeScript performs NO
+  // excess-property checking on it. That is how the old `customShopDomains` key
+  // survived its own removal from the library without a single compiler error.
+  // Any option renamed or dropped upstream will fail silently here too --
+  // re-read the changelog on every @shopify/shopify-app-react-router bump.
+  domainTransformations: buildDomainTransformations(
+    process.env.SHOP_CUSTOM_DOMAIN,
+  ),
 });
 
 export default shopify;

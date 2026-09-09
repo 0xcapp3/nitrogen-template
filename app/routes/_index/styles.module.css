@@ -71,3 +71,7 @@
     padding-bottom: 1rem;
   }
 }
+
+.error {
+  color: #8e0b21;
+}
