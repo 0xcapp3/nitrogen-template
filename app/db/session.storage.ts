@@ -72,11 +72,18 @@ function rowToSession(row: SessionRow): Session {
 }
 
 export class DrizzleSessionStorage implements SessionStorage {
+  /**
+   * @param database Drizzle instance to read and write sessions with. Defaults
+   *   to the application-wide client, so `new DrizzleSessionStorage()` keeps
+   *   working; tests inject a throwaway database instead.
+   */
+  constructor(private readonly database: typeof db = db) {}
+
   async storeSession(session: Session): Promise<boolean> {
     try {
       const values = sessionValues(session);
 
-      await db
+      await this.database
         .insert(shopifySessions)
         .values({ id: session.id, ...values })
         .onConflictDoUpdate({
@@ -98,7 +105,7 @@ export class DrizzleSessionStorage implements SessionStorage {
 
   async loadSession(id: string): Promise<Session | undefined> {
     try {
-      const row = await db
+      const row = await this.database
         .select()
         .from(shopifySessions)
         .where(eq(shopifySessions.id, id))
@@ -119,7 +126,9 @@ export class DrizzleSessionStorage implements SessionStorage {
 
   async deleteSession(id: string): Promise<boolean> {
     try {
-      await db.delete(shopifySessions).where(eq(shopifySessions.id, id));
+      await this.database
+        .delete(shopifySessions)
+        .where(eq(shopifySessions.id, id));
       return true;
     } catch (error) {
       console.error(
@@ -134,7 +143,9 @@ export class DrizzleSessionStorage implements SessionStorage {
 
   async deleteSessions(ids: string[]): Promise<boolean> {
     try {
-      await db.delete(shopifySessions).where(inArray(shopifySessions.id, ids));
+      await this.database
+        .delete(shopifySessions)
+        .where(inArray(shopifySessions.id, ids));
       return true;
     } catch (error) {
       console.error(
@@ -148,7 +159,7 @@ export class DrizzleSessionStorage implements SessionStorage {
 
   async findSessionsByShop(shop: string): Promise<Session[]> {
     try {
-      const rows = await db
+      const rows = await this.database
         .select()
         .from(shopifySessions)
         .where(eq(shopifySessions.shop, shop));

@@ -20,7 +20,10 @@
     "graphql-codegen": "graphql-codegen",
     "vite": "vite",
     "typecheck": "react-router typegen && tsc --noEmit",
-    "check": "yarn lint && yarn typecheck && yarn build"
+    "test": "vitest run --project unit",
+    "test:watch": "vitest --project unit",
+    "test:integration": "vitest run --project integration",
+    "check": "yarn lint && yarn typecheck && yarn test && yarn build"
   },
   "type": "module",
   "engines": {
