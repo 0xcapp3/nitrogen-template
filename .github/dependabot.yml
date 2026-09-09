@@ -23,13 +23,64 @@ updates:
       semver-minor-days: 14
       semver-patch-days: 14
 
+    ignore:
+      # Hold the React Router family at the version pinned in package.json.
+      # 7.18.3 tightened action-origin validation from host-only to full origin
+      # (scheme + host + port). Under `shopify app dev` TLS terminates at the
+      # tunnel and the app server sees a plain-http request URL, so
+      # `Origin: https://<host>` no longer matches and every action POST returns
+      # 400. Same failure in production behind any TLS-terminating proxy, since
+      # `react-router-serve` never enables Express `trust proxy`.
+      #
+      # Upstream treats the new behaviour as correct and prescribes the
+      # `allowedActionOrigins` config option rather than a fix, so these ignores
+      # are not waiting on a patch release. Remove them together with the exact
+      # versions in package.json once this template adopts
+      # `allowedActionOrigins` (which also needs a build-time story for
+      # `react-router-serve`, since the value is baked into the production
+      # build).
+      #
+      # NOTE: ignore rules apply to Dependabot SECURITY updates as well as
+      # version updates, so a react-router security release above 7.18.2 will
+      # NOT produce a Dependabot PR while these entries stand.
+      #
+      # `.github/workflows/audit.yml` covers that blind spot: it runs weekly and
+      # fails if any of the packages listed below picks up an advisory. Keep the
+      # PINNED list in `scripts/audit-pinned.mjs` in sync with these entries.
+      - dependency-name: 'react-router'
+        versions: ['>7.18.2']
+      - dependency-name: '@react-router/dev'
+        versions: ['>7.18.2']
+      - dependency-name: '@react-router/fs-routes'
+        versions: ['>7.18.2']
+      - dependency-name: '@react-router/node'
+        versions: ['>7.18.2']
+      - dependency-name: '@react-router/serve'
+        versions: ['>7.18.2']
+
     groups:
 
-      # Group together PRs of dependant packages
-      prisma:
+      # Group together PRs of dependant packages.
+      #
+      # The @shopify/* packages are coupled by peer dependencies: shopify-api,
+      # shopify-app-session-storage and shopify-app-react-router must move
+      # together or none of them installs cleanly. api-codegen-preset shares
+      # their Node floor.
+      shopify:
         patterns:
-          - 'prisma'
-          - '@prisma/client'
+          - '@shopify/shopify-api'
+          - '@shopify/shopify-app-react-router'
+          - '@shopify/shopify-app-session-storage'
+          - '@shopify/api-codegen-preset'
+      # Flat config wires all of these together; a lone plugin bump is untestable.
+      eslint:
+        patterns:
+          - 'eslint'
+          - '@eslint/js'
+          - 'typescript-eslint'
+          - 'eslint-plugin-*'
+          - 'eslint-import-resolver-*'
+          - 'globals'
       react:
         patterns:
           - 'react'
@@ -39,7 +90,6 @@ updates:
       vite:
         patterns:
           - 'vite'
-          - 'vite-tsconfig-paths'
       react-router:
         patterns:
           - '@react-router/dev'

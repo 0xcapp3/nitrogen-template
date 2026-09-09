@@ -4,36 +4,37 @@ name: CI
 
 jobs:
   CI:
-    name: Node ${{ matrix.node }} and ${{ matrix.manager }}
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: [20.19.0, 22, 24]
-        manager: ['npm', 'yarn', 'pnpm']
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
-          node-version: ${{ matrix.node }}
+          # Single source of truth for the Node version, shared with mise.toml
+          # and `engines.node`. The range is capped below 25 because Corepack,
+          # used on the next line, was removed from the Node distribution there.
+          node-version-file: .nvmrc
 
-      - name: Install pnpm
-        if: ${{ matrix.manager == 'pnpm' }}
-        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
-        with:
-          version: 8
+      - name: Enable Corepack
+        run: corepack enable
 
-      - name: Install dependencies using ${{ matrix.manager }}
-        run: ${{ matrix.manager }} install
+      - name: Install dependencies
+        run: yarn install --immutable
 
-      - name: Run TypeScript type checking
-        if: ${{ !startsWith(github.head_ref || github.ref_name, 'javascript') }}
-        run: npx tsc --noEmit
+      # `check` = lint + (react-router typegen && tsc --noEmit) + unit tests + build.
+      # The typegen step is why this can't be a bare `tsc --noEmit`.
+      - name: Lint, typecheck, unit test and build
+        run: yarn check
 
-      - name: Run ESLint
-        run: npm run lint
+      # Pulled ahead of the test run on purpose. testcontainers gives itself
+      # only 10s to see a container's ports bound, and on a cold image cache the
+      # pull eats that budget and the run fails before Postgres is even reached.
+      - name: Pre-pull the test database image
+        run: docker pull postgres:17-alpine
 
-      - name: Validate Prisma
-        run: npx prisma generate && npx prisma validate
-
-      - name: Build application
-        run: npm run build
+      - name: Integration tests
+        run: yarn test:integration
+        env:
+          # The runner is thrown away after the job, so there are no orphaned
+          # containers for Ryuk to reap — and skipping it removes a second
+          # image pull from the critical path.
+          TESTCONTAINERS_RYUK_DISABLED: true

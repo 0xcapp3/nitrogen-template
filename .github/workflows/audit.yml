@@ -1,0 +1,42 @@
+name: Audit
+
+# Why this exists, and why it is not just `yarn npm audit`:
+#
+# `.github/dependabot.yml` pins the React Router family to 7.18.2 with `ignore`
+# rules, and those rules suppress *security* updates as well as version updates.
+# So an advisory on react-router above 7.18.2 will never open a Dependabot PR
+# while the pin stands. That is the blind spot this job closes.
+#
+# It does not gate on the whole tree. The tree carries ~26 transitive advisories
+# in build-only tooling (brace-expansion via minimatch, browserslist via babel,
+# postcss via vite, tar via node-gyp), none of them in the server's request
+# path. Failing on those would make this job permanently red, and a permanently
+# red job is one nobody reads. `scripts/audit-pinned.mjs` prints the full
+# picture and fails only on the pinned packages.
+
+on:
+  schedule:
+    # Mondays, 07:00 UTC.
+    - cron: '0 7 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Audit pinned dependencies
+        run: node scripts/audit-pinned.mjs

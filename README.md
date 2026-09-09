@@ -6,13 +6,19 @@ Visit the [`shopify.dev` documentation](https://shopify.dev/docs/api/shopify-app
 
 ## About this fork
 
-This is an internal fork of the official [Shopify React Router app template](https://github.com/Shopify/shopify-app-template-react-router). It deviates from upstream in two ways only:
+This is an internal fork of the official [Shopify React Router app template](https://github.com/Shopify/shopify-app-template-react-router). It deviates from upstream in the following ways:
 
 - **Session storage**: [Drizzle ORM](https://orm.drizzle.team/) with **PostgreSQL** replaces Prisma/SQLite. Sessions are stored via a custom `SessionStorage` adapter (`app/db/session.storage.ts`), with the schema in `app/db/schema.ts` and migrations in the root-level `drizzle/` directory. Prisma is not used.
 - **Package manager**: [Yarn 4](https://yarnpkg.com/) (`4.14.1`) via Corepack, with `nodeLinker: node-modules` (no PnP).
 - **Internal hardening**: production fails fast without `DATABASE_URL` and `SHOPIFY_TOKEN_ENCRYPTION_KEY`, Shopify tokens can be encrypted at rest, and public-app privacy webhook stubs are included.
+- **Dependencies ahead of upstream**: `@shopify/shopify-app-react-router` v2 (upstream is still on v1), ESLint 9 with flat config (`eslint.config.js`, upstream still ships `.eslintrc.cjs`), TypeScript 6, Vite 8, Admin API `2026-04`, and Node 24 as the runtime. See `CHANGELOG.md` for the reasoning behind each.
+- **React Router pinned to `7.18.2`**: exact versions, not ranges. 7.18.3 breaks every action POST under `shopify app dev`; the pin is enforced in `package.json` and mirrored by `ignore` rules in `.github/dependabot.yml`, both of which carry the full explanation. Because those `ignore` rules also suppress security updates, `.github/workflows/audit.yml` watches the pinned packages on a schedule.
+- **Tests**: Vitest, with unit coverage for the fork-specific code and a testcontainers-backed integration suite for the session storage. Upstream ships no tests.
+- **Trimmed CI**: the upstream repo-maintenance workflows (CLA, issue gardening, the generated `javascript` branch) are removed; only `ci.yml` and `audit.yml` remain.
 
-Everything else intentionally matches upstream to keep the fork easy to update. To sync with the official template:
+Note on dependency overrides: under Yarn only `resolutions` takes effect — the `overrides` block in `package.json` is inert here and matters only to anyone installing this template with npm.
+
+The rest intentionally matches upstream to keep the fork easy to update. To sync with the official template:
 
 ```shell
 git fetch upstream
@@ -32,15 +38,26 @@ If you have an existing Remix app that you want to upgrade to React Router, plea
 Before you begin, you'll need:
 
 1. The [Shopify CLI](https://shopify.dev/docs/apps/tools/cli/getting-started) installed.
-2. Node.js `>=20.19 <22 || >=22.12` with Corepack enabled (`corepack enable`), so the pinned Yarn `4.14.1` is used automatically.
+2. **Node.js 24** — the range is `>=24 <25`, and the upper bound is deliberate. Corepack was removed from the Node distribution in v25, and this repo vendors no Yarn release in `.yarn/releases`, so on Node 25+ there is no `yarn` at all unless you install one yourself. Node 24 is also what CI and the `Dockerfile` run.
 3. A running **PostgreSQL** database, reachable via the `DATABASE_URL` environment variable.
+4. [Docker](https://docs.docker.com/get-started/get-docker/) — only for `yarn test:integration`, which starts a throwaway PostgreSQL container. Not needed for `yarn check`.
+
+The Node version is pinned in three places that must stay in sync: `.nvmrc` (the portable source of truth, also consumed by CI), `mise.toml`, and `engines.node` in `package.json`.
+
+Pick whichever version manager you use:
+
+```shell
+mise install          # reads mise.toml — also provides Yarn, no Corepack needed
+nvm use               # reads .nvmrc — then `corepack enable` for Yarn
+fnm use               # reads .nvmrc — then `corepack enable` for Yarn
+```
 
 ### Setup
 
 Clone this repository, then:
 
 ```shell
-corepack enable
+corepack enable   # skip if your version manager already provides Yarn
 yarn install
 cp .env.example .env
 ```
@@ -174,6 +191,20 @@ Run the internal check suite with:
 yarn check
 ```
 
+### Tests
+
+```shell
+yarn test              # unit tests — no prerequisites, included in `yarn check`
+yarn test:watch
+yarn test:integration  # requires a running Docker daemon
+```
+
+Unit tests cover the parts of this fork that upstream does not have: token encryption at rest (`app/db/token-crypto.server.ts`), the custom shop domain handling (`app/shopify.domains.ts`), and login error mapping.
+
+`yarn test:integration` exercises the Drizzle `SessionStorage` against a throwaway PostgreSQL container started by [testcontainers](https://node.testcontainers.org/), on the same image as `compose.yaml`, with the committed migrations from `drizzle/` applied. It uses the real `postgres-js` driver, so it also covers the migrations themselves.
+
+It is deliberately kept out of `yarn check` so that running the checks — or committing — never depends on Docker being up.
+
 ## Hosting
 
 When you're ready to set up your app in production, you can follow [our deployment documentation](https://shopify.dev/docs/apps/launch/deployment) to host it externally. From there, you have a few options:
@@ -184,6 +215,8 @@ When you're ready to set up your app in production, you can follow [our deployme
 - [Manual deployment guide](https://shopify.dev/docs/apps/launch/deployment/deploy-to-hosting-service): This resource provides general guidance on the requirements of deployment including environment variables, secrets, and persistent data.
 
 When you reach the step for [setting up environment variables](https://shopify.dev/docs/apps/deployment/web#set-env-vars), you also need to set the variables `NODE_ENV=production`, `DATABASE_URL`, and `SHOPIFY_TOKEN_ENCRYPTION_KEY`.
+
+`SHOP_CUSTOM_DOMAIN` is optional: set it to a custom shop domain suffix (e.g. `custom.domain.com`) for split-domain setups, and shops on it will be accepted as valid. See `app/shopify.domains.ts`.
 
 ## Gotchas / Troubleshooting
 
@@ -200,6 +233,21 @@ The Drizzle migrations haven't been applied to your database. Make sure `DATABAS
 ```shell
 yarn setup
 ```
+
+### `yarn test:integration` times out waiting for container ports
+
+```
+Timed out after 10000ms while waiting for container ports to be bound to the host
+```
+
+testcontainers allows itself only 10 seconds to see a container's ports bound, and that budget is not configurable per-run. On a cold image cache the pull eats it, and the run fails before PostgreSQL is even reached — usually on the `testcontainers/ryuk` sidecar rather than on Postgres itself. Pull the images once and re-run:
+
+```shell
+docker pull postgres:17-alpine
+docker pull testcontainers/ryuk:0.14.0
+```
+
+CI sidesteps this by pre-pulling the database image and setting `TESTCONTAINERS_RYUK_DISABLED=true` — the runner is thrown away after the job, so there is nothing for Ryuk to reap.
 
 ### Navigating/redirecting breaks an embedded app
 
