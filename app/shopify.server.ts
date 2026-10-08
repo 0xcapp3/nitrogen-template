@@ -5,6 +5,7 @@ import {
   shopifyApp,
 } from "@shopify/shopify-app-react-router/server";
 import { DrizzleSessionStorage } from "./db/session.storage";
+import { customDomainTransformations } from "./shopify-domain.server";
 
 const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY,
@@ -18,9 +19,9 @@ const shopify = shopifyApp({
   future: {
     expiringOfflineAccessTokens: true,
   },
-  ...(process.env.SHOP_CUSTOM_DOMAIN
-    ? { customShopDomains: [process.env.SHOP_CUSTOM_DOMAIN] }
-    : {}),
+  domainTransformations: customDomainTransformations(
+    process.env.SHOP_CUSTOM_DOMAIN,
+  ),
 });
 
 export default shopify;
