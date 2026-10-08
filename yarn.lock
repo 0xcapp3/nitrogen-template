@@ -2234,9 +2234,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-router/dev@npm:^7.12.0":
-  version: 7.18.1
-  resolution: "@react-router/dev@npm:7.18.1"
+"@react-router/dev@npm:7.18.2":
+  version: 7.18.2
+  resolution: "@react-router/dev@npm:7.18.2"
   dependencies:
     "@babel/core": "npm:^7.27.7"
     "@babel/generator": "npm:^7.27.5"
@@ -2245,7 +2245,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.27.1"
     "@babel/traverse": "npm:^7.27.7"
     "@babel/types": "npm:^7.27.7"
-    "@react-router/node": "npm:7.18.1"
+    "@react-router/node": "npm:7.18.2"
     "@remix-run/node-fetch-server": "npm:^0.13.0"
     arg: "npm:^5.0.1"
     babel-dead-code-elimination: "npm:^1.0.6"
@@ -2267,9 +2267,9 @@ __metadata:
     valibot: "npm:^1.2.0"
     vite-node: "npm:^3.2.2"
   peerDependencies:
-    "@react-router/serve": ^7.18.1
+    "@react-router/serve": ^7.18.2
     "@vitejs/plugin-rsc": ~0.5.21
-    react-router: ^7.18.1
+    react-router: ^7.18.2
     react-server-dom-webpack: ^19.2.3
     typescript: ^5.1.0 || ^6.0.0
     vite: ^5.1.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
@@ -2287,73 +2287,73 @@ __metadata:
       optional: true
   bin:
     react-router: bin.js
-  checksum: 10c0/a36552e7e5083333af231bf2069ef94ef8da168a732551f68cba0e149f15023a9e8b1ad81b018d303805c56338443c8f963cd6854f1f3055d9d0d2d36e98bf04
+  checksum: 10c0/129a8d6f686ec0ac3810ac1f18fac0b5d014e81c5de034754bdb10dabb557ca98ea5e05dcfa679aa5a49c655641de4319bdd788eeee10dabdb96a69f1506a4ef
   languageName: node
   linkType: hard
 
-"@react-router/express@npm:7.18.1":
-  version: 7.18.1
-  resolution: "@react-router/express@npm:7.18.1"
+"@react-router/express@npm:7.18.2":
+  version: 7.18.2
+  resolution: "@react-router/express@npm:7.18.2"
   dependencies:
-    "@react-router/node": "npm:7.18.1"
+    "@react-router/node": "npm:7.18.2"
   peerDependencies:
     express: ^4.17.1 || ^5
-    react-router: 7.18.1
+    react-router: 7.18.2
     typescript: ^5.1.0 || ^6.0.0
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/eea26f7e540ea6761c7d7b1d98f05694e238931628cc7d36965cb99837fb3ff091a230d38f59d66580851401db1d83a2692218fbe913854596e0c05a4fbd4fb1
+  checksum: 10c0/c6dcd5db86af70fce1312856e986fc61f11456b9b7475716071f7bb2cdba570c8eba81d6d1fd0ccedffe38b8fa08e2db61482e21648860067c2bf06604a9878d
   languageName: node
   linkType: hard
 
-"@react-router/fs-routes@npm:^7.12.0":
-  version: 7.18.1
-  resolution: "@react-router/fs-routes@npm:7.18.1"
+"@react-router/fs-routes@npm:7.18.2":
+  version: 7.18.2
+  resolution: "@react-router/fs-routes@npm:7.18.2"
   dependencies:
     minimatch: "npm:^9.0.0"
   peerDependencies:
-    "@react-router/dev": ^7.18.1
+    "@react-router/dev": ^7.18.2
     typescript: ^5.1.0 || ^6.0.0
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/8e20c6e9a18d3baed6f7cd87007efaf6395c21eb672ab59d62249bf59098f35e4fb0a897212d4b8172235f4fd22fe75d4e2dbd827a04c98c1abde84a207a0f92
+  checksum: 10c0/b55eb83536192220ec6e96290c11b218cfa777e5c4bd01cf5c24111034b7bbfe17f2d932b9835844a08643a1014dd8721d4a1b31d0cf4db21c7f6434ccb14375
   languageName: node
   linkType: hard
 
-"@react-router/node@npm:7.18.1, @react-router/node@npm:^7.12.0":
-  version: 7.18.1
-  resolution: "@react-router/node@npm:7.18.1"
+"@react-router/node@npm:7.18.2":
+  version: 7.18.2
+  resolution: "@react-router/node@npm:7.18.2"
   dependencies:
     "@mjackson/node-fetch-server": "npm:^0.2.0"
   peerDependencies:
-    react-router: 7.18.1
+    react-router: 7.18.2
     typescript: ^5.1.0 || ^6.0.0
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/af5e908b57f81ea179868ce0534bbde3613bb9ecdc208e6f727a838eb4f7b8bd5339f2f232668c62108c7709c005e252f6dacbf886aabaa3d18a0e8e006c4537
+  checksum: 10c0/6ef3ae4ef31c097d031df4b9d98e05f5412f66997cce3bc8af7f0c1ebfc6a0a8a147520fdefeba663dcf31c8640f6cfd006ec49e22f0938bd7670345c4aee74c
   languageName: node
   linkType: hard
 
-"@react-router/serve@npm:^7.12.0":
-  version: 7.18.1
-  resolution: "@react-router/serve@npm:7.18.1"
+"@react-router/serve@npm:7.18.2":
+  version: 7.18.2
+  resolution: "@react-router/serve@npm:7.18.2"
   dependencies:
     "@mjackson/node-fetch-server": "npm:^0.2.0"
-    "@react-router/express": "npm:7.18.1"
-    "@react-router/node": "npm:7.18.1"
+    "@react-router/express": "npm:7.18.2"
+    "@react-router/node": "npm:7.18.2"
     compression: "npm:^1.8.1"
     express: "npm:^4.19.2"
     get-port: "npm:5.1.1"
     morgan: "npm:^1.10.1"
     source-map-support: "npm:^0.5.21"
   peerDependencies:
-    react-router: 7.18.1
+    react-router: 7.18.2
   bin:
     react-router-serve: bin.js
-  checksum: 10c0/245eba66ddce5805e4f19ed7cd1c7abb542a163e48ca2862b3966030d6ecdf8d86bf5a02ec05eccd37f3362b4b9e13f65eca9922939a1c2c25962e10b475c444
+  checksum: 10c0/8add40654e236e3254dc91c08a069c4c6b57f698edb1d0550ea252d3b8c751f7fe3cafa4138afebbfe26113d2c04e1bef290ef0b5314b985e5482dfb31348c69
   languageName: node
   linkType: hard
 
@@ -2553,12 +2553,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/admin-api-client@npm:^1.1.2":
-  version: 1.1.2
-  resolution: "@shopify/admin-api-client@npm:1.1.2"
+"@shopify/admin-api-client@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@shopify/admin-api-client@npm:2.0.1"
   dependencies:
-    "@shopify/graphql-client": "npm:^1.4.2"
-  checksum: 10c0/1ac4d9cfdbdc96de059bdfe1caafd343232d47a9f6d9631d3aed1c1846c0ed790a9f96d34bb573c545a2a9432c3f32bfcbd7700c652155fe01603128e8e15338
+    "@shopify/graphql-client": "npm:^2.0.1"
+  checksum: 10c0/94ea7e597f628487925e9d7a69acc259418e4d9af6c3f324cfebfca615a330c63f9ed80a0e210f7028076ed0638b9c34e3a2968bc60e674f1bad7cf8182e5950
   languageName: node
   linkType: hard
 
@@ -2597,10 +2597,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/graphql-client@npm:^1.4.2":
-  version: 1.4.2
-  resolution: "@shopify/graphql-client@npm:1.4.2"
-  checksum: 10c0/f18d898ec3fb12a819b6c2941d9ddaebd1ab7152ffe55450ab9255c11860de9422ba1e9eadee5f44ef314f664fe411c642ba3debd6671851b9cdc647eb85e0be
+"@shopify/graphql-client@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@shopify/graphql-client@npm:2.0.1"
+  checksum: 10c0/2978db484e9b5f9e77c71942d54572bfe48e2968810e6c118b5db4113be5ccad4944acad1849395de1bb7479cbde50fb385f97ff809a3a96d292b8b57d7e1190
   languageName: node
   linkType: hard
 
@@ -2625,55 +2625,55 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/shopify-api@npm:^13.0.0, @shopify/shopify-api@npm:^13.1.0":
-  version: 13.1.0
-  resolution: "@shopify/shopify-api@npm:13.1.0"
+"@shopify/shopify-api@npm:^15.0.0, @shopify/shopify-api@npm:^15.0.1":
+  version: 15.0.1
+  resolution: "@shopify/shopify-api@npm:15.0.1"
   dependencies:
-    "@shopify/admin-api-client": "npm:^1.1.2"
-    "@shopify/graphql-client": "npm:^1.4.2"
-    "@shopify/storefront-api-client": "npm:^1.0.10"
+    "@shopify/admin-api-client": "npm:^2.0.1"
+    "@shopify/graphql-client": "npm:^2.0.1"
+    "@shopify/storefront-api-client": "npm:^2.0.1"
     compare-versions: "npm:^6.1.1"
-    isbot: "npm:^5.1.40"
+    isbot: "npm:^5.2.0"
     jose: "npm:^5.9.6"
     lossless-json: "npm:^4.3.0"
     tslib: "npm:^2.8.1"
-  checksum: 10c0/bb5c81b906b8779a9640b3598aa769515cdd1c705171590876b851074f4dd9836c274d754fb1230336dfb3667a0c471f3d9d20461439e090ff3995d347710eb7
+  checksum: 10c0/6ef061fb69bcace3483bd3a06085fbf20d23dc35a0022691b5791e065322497177e4655bb8bc5701daf4435fe630588db2fa4bbf2ce7db1cedbe1b5e09911a82
   languageName: node
   linkType: hard
 
-"@shopify/shopify-app-react-router@npm:^1.1.0":
-  version: 1.2.1
-  resolution: "@shopify/shopify-app-react-router@npm:1.2.1"
+"@shopify/shopify-app-react-router@npm:^3.0.1":
+  version: 3.0.2
+  resolution: "@shopify/shopify-app-react-router@npm:3.0.2"
   dependencies:
-    "@shopify/admin-api-client": "npm:^1.1.2"
-    "@shopify/shopify-api": "npm:^13.1.0"
-    "@shopify/shopify-app-session-storage": "npm:^5.0.1"
-    "@shopify/storefront-api-client": "npm:^1.0.10"
+    "@shopify/admin-api-client": "npm:^2.0.1"
+    "@shopify/shopify-api": "npm:^15.0.1"
+    "@shopify/shopify-app-session-storage": "npm:^7.0.1"
+    "@shopify/storefront-api-client": "npm:^2.0.1"
     compare-versions: "npm:^6.1.1"
-    isbot: "npm:^5.1.40"
+    isbot: "npm:^5.2.0"
   peerDependencies:
     react: ">=18"
     react-dom: ">=18"
     react-router: ^7.6.2
-  checksum: 10c0/99b131274fa71194627616141a29ca638e28c54eab059c4c3bb47887f7a0491ce39ca4a9ba7d6c0c952c42bf0c2d42c7bca8a1187e2efc73a7d321e9cd5142f3
+  checksum: 10c0/a0bad64c79809097172244b296185e8c24596b8ff4c66361688ca1e276807ff71984960121766142fdb9af448dead98c5d6ef0f68cca916ec9744fcb8fc1a3a0
   languageName: node
   linkType: hard
 
-"@shopify/shopify-app-session-storage@npm:^5.0.0, @shopify/shopify-app-session-storage@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "@shopify/shopify-app-session-storage@npm:5.0.1"
+"@shopify/shopify-app-session-storage@npm:^7.0.0, @shopify/shopify-app-session-storage@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "@shopify/shopify-app-session-storage@npm:7.0.1"
   peerDependencies:
-    "@shopify/shopify-api": ^13.0.0
-  checksum: 10c0/a428e62585c778e32b3036af353bf64ba2b2fb6f550885403eea69df2e019ca41b9646734aac1d63b60a8229168400defcf452701af302cf686a7686ddc44ad8
+    "@shopify/shopify-api": ^15.0.0
+  checksum: 10c0/9f81c5d228ee76454970c0ca2a93083ac60de774d2e447de4d5340c9d596d408fd012548ab83f5ca2f2ac34cce8d628557ea84e99d2e24c6b797586538d6bb8e
   languageName: node
   linkType: hard
 
-"@shopify/storefront-api-client@npm:^1.0.10":
-  version: 1.0.10
-  resolution: "@shopify/storefront-api-client@npm:1.0.10"
+"@shopify/storefront-api-client@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@shopify/storefront-api-client@npm:2.0.1"
   dependencies:
-    "@shopify/graphql-client": "npm:^1.4.2"
-  checksum: 10c0/e8eff260e91857e87cffb543ca57c8a4a6e549316e0b6ccef2c345b857ef59e4092e92ecd2904706aa386bca1d21af4ef3e7447f9966b8dcceda06b3ad7dadc9
+    "@shopify/graphql-client": "npm:^2.0.1"
+  checksum: 10c0/4051fc7fcaf8b39c90693a5234761fca5ad858d5e114dd503e06f20ef948235444c8dbb866f7e649c3218573e6e5af19cd3dd1e87aa96b477754140e4f6281dd
   languageName: node
   linkType: hard
 
@@ -3203,16 +3203,16 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "app@workspace:."
   dependencies:
-    "@react-router/dev": "npm:^7.12.0"
-    "@react-router/fs-routes": "npm:^7.12.0"
-    "@react-router/node": "npm:^7.12.0"
-    "@react-router/serve": "npm:^7.12.0"
+    "@react-router/dev": "npm:7.18.2"
+    "@react-router/fs-routes": "npm:7.18.2"
+    "@react-router/node": "npm:7.18.2"
+    "@react-router/serve": "npm:7.18.2"
     "@shopify/api-codegen-preset": "npm:^2.0.0"
     "@shopify/app-bridge-react": "npm:^4.2.4"
     "@shopify/polaris-types": "npm:1.0.1"
-    "@shopify/shopify-api": "npm:^13.0.0"
-    "@shopify/shopify-app-react-router": "npm:^1.1.0"
-    "@shopify/shopify-app-session-storage": "npm:^5.0.0"
+    "@shopify/shopify-api": "npm:^15.0.0"
+    "@shopify/shopify-app-react-router": "npm:^3.0.1"
+    "@shopify/shopify-app-session-storage": "npm:^7.0.0"
     "@types/eslint": "npm:^9.6.1"
     "@types/node": "npm:^25.5.2"
     "@types/react": "npm:^18.3.25"
@@ -3234,7 +3234,7 @@ __metadata:
     prettier: "npm:^3.6.2"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
-    react-router: "npm:^7.12.0"
+    react-router: "npm:7.18.2"
     typescript: "npm:^5.9.3"
     vite: "npm:^7.3.1"
     vite-tsconfig-paths: "npm:^6.0.4"
@@ -6110,10 +6110,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"isbot@npm:^5.1.11, isbot@npm:^5.1.31, isbot@npm:^5.1.40":
+"isbot@npm:^5.1.11, isbot@npm:^5.1.31":
   version: 5.1.44
   resolution: "isbot@npm:5.1.44"
   checksum: 10c0/c6b4d4f778cf2d4c0bd4b6aaf4454db252fa57d3f7bd047e87ad95617a560a020b9421b529cc190aee28ea9cb8aca3d868fb2615c4aaa1b2940f5867c0359d73
+  languageName: node
+  linkType: hard
+
+"isbot@npm:^5.2.0":
+  version: 5.2.2
+  resolution: "isbot@npm:5.2.2"
+  checksum: 10c0/df8356dd8745d7fe1922fc8df894bf5560fe959ad7826ac97311c430dc9c6dd628c8aab68d3e45769b50b61411bd4530d874aae07947f6cd04e25206566a7bb3
   languageName: node
   linkType: hard
 
@@ -7192,13 +7199,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qs@npm:~6.15.1":
-  version: 6.15.3
-  resolution: "qs@npm:6.15.3"
+"qs@npm:^6.16.0":
+  version: 6.16.0
+  resolution: "qs@npm:6.16.0"
   dependencies:
     es-define-property: "npm:^1.0.1"
     side-channel: "npm:^1.1.1"
-  checksum: 10c0/8f3f6e45ece255347d57696628401cde29e9ec649fff698b53bd3150dea7cefdf33036e1bc1826b9f110bfa7cb0ec4ab9f5297eca628ce216c55af82c304e08e
+  checksum: 10c0/eb3e31992fbd70e31a1791e571ed817d70975de7d3bfcbbbec93d77d1dd305877e9e8fdbcc62303c228ee5c3606685622cd6231c042dbc4790bb4e7c65fcbe18
   languageName: node
   linkType: hard
 
@@ -7254,9 +7261,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router@npm:^7.12.0":
-  version: 7.18.1
-  resolution: "react-router@npm:7.18.1"
+"react-router@npm:7.18.2":
+  version: 7.18.2
+  resolution: "react-router@npm:7.18.2"
   dependencies:
     cookie: "npm:^1.0.1"
     set-cookie-parser: "npm:^2.6.0"
@@ -7266,7 +7273,7 @@ __metadata:
   peerDependenciesMeta:
     react-dom:
       optional: true
-  checksum: 10c0/1a559de58d656bad5565f2232e4f4fab7e9f5282dfaf95bc24f195a06e7e85b281077fe5c21ed3ff527e3d90d930447e0d0bb0f0713950d2a56ad0f0377a7d09
+  checksum: 10c0/513b04adf020fcf95124557418e003d16b175765045332858d5817b045e49dfe33b529c4871c57b0cddf24fa5432589ffc45d1a9a5b398b069f02adb755fab15
   languageName: node
   linkType: hard
 
