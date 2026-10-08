@@ -20,7 +20,8 @@
     "graphql-codegen": "graphql-codegen",
     "vite": "vite",
     "typecheck": "react-router typegen && tsc --noEmit",
-    "check": "yarn lint && yarn typecheck && yarn build"
+    "test": "node --experimental-strip-types --test tests/*.test.mjs",
+    "check": "yarn lint && yarn typecheck && yarn test && yarn build"
   },
   "type": "module",
   "engines": {

@@ -32,7 +32,7 @@ If you have an existing Remix app that you want to upgrade to React Router, plea
 Before you begin, you'll need:
 
 1. The [Shopify CLI](https://shopify.dev/docs/apps/tools/cli/getting-started) installed.
-2. Node.js `>=20.19 <22 || >=22.12` with Corepack enabled (`corepack enable`), so the pinned Yarn `4.14.1` is used automatically.
+2. Node.js `>=22.12` with Corepack enabled (`corepack enable`), so the pinned Yarn `4.14.1` is used automatically.
 3. A running **PostgreSQL** database, reachable via the `DATABASE_URL` environment variable.
 
 ### Setup
