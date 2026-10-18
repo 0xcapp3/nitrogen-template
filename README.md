@@ -1,5 +1,15 @@
 # Shopify App Template - React Router
 
+![Node.js 22](https://img.shields.io/badge/Node.js-22-339933?logo=nodedotjs&logoColor=white)
+![Yarn 4.14.1](https://img.shields.io/badge/Yarn-4.14.1-2C8EBB?logo=yarn&logoColor=white)
+![TypeScript 5.9.3](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript&logoColor=white)
+![React 18.3.1](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react&logoColor=black)
+![React Router 7.18.2](https://img.shields.io/badge/React%20Router-7.18.2-CA4245?logo=reactrouter&logoColor=white)
+![Vite 7.3.1](https://img.shields.io/badge/Vite-7.3.1-646CFF?logo=vite&logoColor=white)
+![Shopify Embedded App](https://img.shields.io/badge/Shopify-Embedded%20App-95BF47?logo=shopify&logoColor=white)
+![Drizzle ORM 0.45.1](https://img.shields.io/badge/Drizzle%20ORM-0.45.1-C5F74F?logo=drizzle&logoColor=black)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)
+
 This is a template for building a [Shopify app](https://shopify.dev/docs/apps/getting-started) using [React Router](https://reactrouter.com/). It was forked from the [Shopify Remix app template](https://github.com/Shopify/shopify-app-template-remix) and converted to React Router.
 
 Visit the [`shopify.dev` documentation](https://shopify.dev/docs/api/shopify-app-react-router) for more details on the React Router app package.
