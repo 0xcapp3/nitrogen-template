@@ -1,0 +1,4 @@
+name = "Nitrogen"
+roles = ["frontend", "backend"]
+[commands]
+dev = "yarn react-router dev"

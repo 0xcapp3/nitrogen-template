@@ -1,0 +1,103 @@
+extends: spectral:oas
+rules:
+  public-version:
+    description: The Gateway owns the public API version prefix.
+    severity: error
+    given: $.servers[*]
+    then:
+      field: url
+      function: enumeration
+      functionOptions:
+        values: [/api/v1]
+  domain-paths:
+    description: Only current application domains belong in this contract.
+    severity: error
+    given: $.paths
+    then:
+      field: '@key'
+      function: pattern
+      functionOptions:
+        match: '^/(mobile|vto|shopify|billing)/'
+  workload-and-merchant-proof:
+    description: Administration requires workload proof and the matching merchant or webhook proof.
+    severity: error
+    given: "$.paths[?(!@property.match(/^\\/vto\\/(widget\\/configuration|image:generate|mock\\/image:generate|groups:assign)$/))]['get','post','put','patch','delete']"
+    then:
+      field: security
+      function: schema
+      functionOptions:
+        schema:
+          type: array
+          minItems: 1
+          maxItems: 1
+          items:
+            type: object
+            required: [serviceBearer]
+            additionalProperties: false
+            properties:
+              serviceBearer: {type: array}
+              shopifyIdToken: {type: array}
+              shopifyWebhookHmac: {type: array}
+            oneOf:
+              - required: [shopifyIdToken]
+              - required: [shopifyWebhookHmac]
+  app-proxy-proof:
+    description: Storefront operations require the Shopify App Proxy signature.
+    severity: error
+    given: "$.paths['/vto/widget/configuration','/vto/image:generate','/vto/mock/image:generate']['get','post']"
+    then:
+      field: security
+      function: schema
+      functionOptions:
+        schema:
+          type: array
+          minItems: 1
+          maxItems: 1
+          items:
+            type: object
+            required: [shopifyAppProxySignature]
+            additionalProperties: false
+            properties:
+              shopifyAppProxySignature: {type: array, maxItems: 0}
+  flow-proof:
+    description: Flow requires verification of the original signed request body.
+    severity: error
+    given: "$.paths['/vto/groups:assign'].post"
+    then:
+      field: security
+      function: schema
+      functionOptions:
+        schema:
+          type: array
+          minItems: 1
+          maxItems: 1
+          items:
+            type: object
+            required: [shopifyFlowHmac]
+            additionalProperties: false
+            properties:
+              shopifyFlowHmac: {type: array, maxItems: 0}
+  common-problem-details:
+    description: Current operations document the common ProblemDetails response.
+    severity: error
+    given: "$.paths[*]['get','post','put','patch','delete'].responses"
+    then:
+      field: default
+      function: schema
+      functionOptions:
+        schema:
+          type: object
+          required: [content]
+          properties:
+            content:
+              type: object
+              required: [application/problem+json]
+  int64-wire-type:
+    description: A signed 64 bit field is a JSON integer, never a numeric string.
+    severity: error
+    given: "$..[?(@ && @.format == 'int64')]"
+    then:
+      field: type
+      function: enumeration
+      functionOptions:
+        values: [integer]

@@ -1,3 +1,10 @@
-.cache
-build
 node_modules
+build
+.git
+.env
+.env.*
+!.env.example
+.shopify
+graft
+examples
+tests
