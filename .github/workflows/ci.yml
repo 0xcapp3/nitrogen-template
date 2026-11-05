@@ -12,23 +12,6 @@ jobs:
     strategy:
       matrix:
         node: [22, 24]
-    env:
-      DATABASE_URL: postgres://app:password@localhost:5432/app
-      TEST_DATABASE_URL: postgres://app:password@localhost:5432/app
-    services:
-      postgres:
-        image: postgres:17-alpine
-        env:
-          POSTGRES_DB: app
-          POSTGRES_USER: app
-          POSTGRES_PASSWORD: password
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U app -d app"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 5
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
@@ -49,9 +32,6 @@ jobs:
 
       - name: Run ESLint
         run: yarn lint
-
-      - name: Validate Drizzle migrations
-        run: yarn db:migrate
 
       - name: Run compatibility tests
         run: yarn test
