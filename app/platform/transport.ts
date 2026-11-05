@@ -104,66 +104,6 @@ export function encodeWireJson(
 }
 
 /** Runtime-only AJV keyword: the public schema still declares integer/int64. */
-export const int64Keyword = {
-  keyword: "nitrogenInt64",
-  schemaType: "object" as const,
-  errors: false,
-  validate: (
-    bounds: { minimum?: string; maximum?: string },
-    value: unknown,
-  ): boolean =>
-    typeof value === "bigint" &&
-    value >= MIN_INT64 &&
-    value <= MAX_INT64 &&
-    (bounds.minimum === undefined || value >= BigInt(bounds.minimum)) &&
-    (bounds.maximum === undefined || value <= BigInt(bounds.maximum)),
-};
-
-/** Adapt only integer/int64 nodes, preserving all other schema constraints. */
-export function runtimeSchema(value: unknown): unknown {
-  if (Array.isArray(value)) return value.map(runtimeSchema);
-  if (value === null || typeof value !== "object") return value;
-  const schema = value as Record<string, unknown>;
-  const result = Object.fromEntries(
-    Object.entries(schema).map(([key, child]) => [key, runtimeSchema(child)]),
-  );
-  const nullable =
-    schema.nullable === true ||
-    (Array.isArray(schema.type) && schema.type.includes("null"));
-  const integer =
-    schema.type === "integer" ||
-    (Array.isArray(schema.type) &&
-      schema.type.length === 2 &&
-      schema.type.includes("integer") &&
-      nullable);
-  if (integer && schema.format === "int64") {
-    const bounds: Record<string, string> = {};
-    for (const name of ["minimum", "maximum"]) {
-      const bound = schema[name];
-      const exact = schema[`x-int64-${name}`];
-      if (exact !== undefined) {
-        if (typeof exact !== "string" || !/^-?(0|[1-9][0-9]*)$/.test(exact) ||
-            BigInt(exact) < -9223372036854775808n || BigInt(exact) > 9223372036854775807n)
-          throw new TypeError("Invalid exact int64 bound metadata");
-        bounds[name] = exact;
-        delete result[name];
-        delete result[`x-int64-${name}`];
-      } else if (bound !== undefined) {
-        if (typeof bound !== "number" || !Number.isSafeInteger(bound))
-          throw new TypeError("Use exact int64 bound metadata");
-        bounds[name] = String(bound);
-        delete result[name];
-      }
-    }
-    delete result.type;
-    delete result.format;
-    delete result.nullable;
-    if (nullable) result.anyOf = [{ nitrogenInt64: bounds }, { type: "null" }];
-    else result.nitrogenInt64 = bounds;
-  }
-  return result;
-}
-
 export function apiUrl(
   base: string,
   path: string,

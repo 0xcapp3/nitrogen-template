@@ -1,5 +1,5 @@
 import { edgeProblem } from "../platform/problem.server";
-import { apiUrl } from "../../contracts/platform-api/1.0.0/transport";
+import { apiUrl } from "../platform/transport";
 
 const headersToForward: readonly [
   "x-shopify-hmac-sha256",

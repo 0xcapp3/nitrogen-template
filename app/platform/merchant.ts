@@ -1,13 +1,13 @@
 import {
   PlatformApiError,
   problemError,
-} from "../../contracts/platform-api/1.0.0/client";
+} from "./client";
 import {
   encodeWireJson,
   readWireJson,
-} from "../../contracts/platform-api/1.0.0/transport";
-import { int64Fields, type CurrentSchemas } from "./current-contract";
-import { conformsCurrent } from "./current-validation";
+} from "./transport";
+import { int64Fields, type AppResponses } from "./models";
+import { validResponse } from "./validation";
 
 type Bridge = { idToken(): Promise<string> };
 function bridge(): Bridge {
@@ -62,13 +62,13 @@ async function fetchValue(
   return value;
 }
 
-export async function capability<N extends keyof CurrentSchemas>(
+export async function capability<N extends keyof AppResponses>(
   name: N,
   operation: string,
   method = "GET",
   body?: unknown,
   key?: string,
-): Promise<CurrentSchemas[N]> {
+): Promise<AppResponses[N]> {
   const value = await requestValue(
     operation,
     method,
@@ -76,13 +76,13 @@ export async function capability<N extends keyof CurrentSchemas>(
     key,
     int64Fields[name],
   );
-  if (!conformsCurrent(name, value))
+  if (!validResponse(name, value))
     throw new PlatformApiError(502, "edge_invalid_response");
   return value;
 }
 
 export type MerchantContext = {
-  installation: CurrentSchemas["ShopifyInstallation"];
+  installation: AppResponses["ShopifyInstallation"];
   shop: string;
 };
 export async function merchantContext(): Promise<MerchantContext> {
@@ -92,7 +92,7 @@ export async function merchantContext(): Promise<MerchantContext> {
     typeof value !== "object" ||
     !("installation" in value) ||
     !("shop" in value) ||
-    !conformsCurrent("ShopifyInstallation", value.installation) ||
+    !validResponse("ShopifyInstallation", value.installation) ||
     typeof value.shop !== "string" ||
     !/^[a-z0-9][a-z0-9-]*\.myshopify\.com$/.test(value.shop)
   )

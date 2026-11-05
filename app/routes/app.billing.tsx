@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { capability, merchantContext } from "../platform/merchant";
-import type { CurrentSchemas } from "../platform/current-contract";
+import type { AppResponses } from "../platform/models";
 import { isShopifyConfirmationUrl } from "../billing/confirmation-url";
 
-type Details = CurrentSchemas["BillingDetails"];
+type Details = AppResponses["BillingDetails"];
 function money(value: number | null, currency: string) {
   return value === null
     ? "Su richiesta"

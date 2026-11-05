@@ -51,17 +51,16 @@ si ruota la credenziale. Non esporre token in Vite, log o variabili client.
 
 ## Contratto e controlli
 
-`contracts/platform-api/1.0.0` è una copia integrale del bundle pubblicato da
-`nitrogen-platform/docs/contracts/platform-api/1.0.0`. Aggiornare il bundle come
-unità, quindi eseguire `yarn contract:generate`. Non modificare i file generati a
-mano. Il validatore runtime rifiuta payload incompatibili; gli int64 viaggiano
-senza perdita di precisione e diventano `bigint` solo sui percorsi del contratto.
+Swagger/OpenAPI mantenuto su Platform è il riferimento delle API. Il template
+contiene solo client HTTP e tipi delle operazioni utilizzate; non copia né scarica
+lo schema Platform. Aggiornare chiamate e tipi consultando Swagger.
+Gli interi int64 utilizzati dal billing sono serializzati senza perdita di precisione.
 
 ```sh
 mise exec -- yarn check
 ```
 
-Il comando esegue lint, TypeScript, verifica del contratto, test e build.
+Il comando esegue lint, TypeScript, test e build.
 CI controlla Node 22 e 24 senza servizi database. `yarn build` e `yarn start`
 producono/servono l'app; il Dockerfile avvia lo stesso server come utente `node`.
 L'ambiente runtime deve fornire le variabili sopra. Le configurazioni `.env`

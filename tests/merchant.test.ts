@@ -125,3 +125,16 @@ test("confirmation URLs cannot leave the verified Shopify shop", () => {
     false,
   );
 });
+
+test("additional receipt fields are compatible but credentials cannot reach the browser", async () => {
+  for (const [extra, status] of [
+    [{ futureCapability: true }, 200],
+    [{ accessToken: "private" }, 502],
+  ] as const) {
+    const result = await handler(async () =>
+      response({ ...installation, ...extra }),
+    )(request("installation"), "installation");
+    assert.equal(result.status, status);
+    assert.ok(!(await result.text()).includes("private"));
+  }
+});

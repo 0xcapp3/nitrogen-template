@@ -3,14 +3,14 @@ import { randomUUID } from "node:crypto";
 import {
   PlatformApiClient,
   PlatformApiError,
-} from "../../contracts/platform-api/1.0.0/client";
+} from "./client";
 import {
   encodeWireJson,
   readWireJson,
   WireBodyLimitError,
-} from "../../contracts/platform-api/1.0.0/transport";
-import { int64Fields, type CurrentSchemas } from "./current-contract";
-import { conformsCurrent } from "./current-validation";
+} from "./transport";
+import { int64Fields, type AppResponses } from "./models";
+import { validResponse } from "./validation";
 
 export function merchantHandler(options: {
   origin: () => string;
@@ -87,7 +87,7 @@ export function merchantHandler(options: {
         if (!body || typeof body !== "object" || Array.isArray(body))
           throw new PlatformApiError(400, "invalid_request");
         if (operation === "subscribe") {
-          if (!conformsCurrent("BillingSubscribe", body))
+          if (!validResponse("BillingSubscribe", body))
             throw new PlatformApiError(422, "validation_failed");
         } else if (Object.keys(body).length)
           throw new PlatformApiError(400, "invalid_request");
@@ -102,7 +102,7 @@ export function merchantHandler(options: {
         ...options,
         baseUrl: options.baseUrl(),
       });
-      const read = <N extends keyof CurrentSchemas>(
+      const read = <N extends keyof AppResponses>(
         name: N,
         path: string,
         method: "GET" | "POST" | "PUT" = "GET",
@@ -119,8 +119,8 @@ export function merchantHandler(options: {
             ? key
             : undefined,
           responseInt64: int64Fields[name],
-          validate: (value): value is CurrentSchemas[N] =>
-            conformsCurrent(name, value),
+          validate: (value): value is AppResponses[N] =>
+            validResponse(name, value),
         });
       const installation = await read(
         "ShopifyInstallation",
@@ -139,7 +139,7 @@ export function merchantHandler(options: {
           throw new PlatformApiError(502, "edge_invalid_response");
         return Response.json({ installation, shop }, { headers });
       }
-      const reply = async <N extends keyof CurrentSchemas>(
+      const reply = async <N extends keyof AppResponses>(
         name: N,
         path: string,
         method: "GET" | "POST" | "PUT" = "GET",

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { loadServiceToken } from "../app/platform/service-token.server";
-import { PlatformApiError } from "../contracts/platform-api/1.0.0/client";
+import { PlatformApiError } from "../app/platform/client";
 
 test("credential is captured from the environment at startup", async () => {
   const before = process.env.NITROGEN_PLATFORM_SERVICE_TOKEN;

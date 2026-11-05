@@ -33,9 +33,6 @@ jobs:
       - name: Run ESLint
         run: yarn lint
 
-      - name: Validate Platform contract
-        run: yarn contract:check
-
       - name: Run compatibility tests
         run: yarn test
 

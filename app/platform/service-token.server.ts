@@ -1,4 +1,4 @@
-import { PlatformApiError } from "../../contracts/platform-api/1.0.0/client";
+import { PlatformApiError } from "./client";
 
 type ServiceTokenProvider = () => Promise<string>;
 
